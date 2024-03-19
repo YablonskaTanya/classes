@@ -1,21 +1,42 @@
-import reactLogo from "./assets/react.svg";
-import viteLogo from "/vite.svg";
 import "./App.css";
+import Header from "./components/Header";
+import user from "./components/Data/user.json";
+import { Component } from "react";
+import { Filter } from "./components/Filter";
+import Team from "./components/Team";
 
-function App() {
-  return (
-    <>
-      <div>
-        <a href="https://vitejs.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-    </>
-  );
+class App extends Component {
+  state = {
+    teamMates: user,
+    filter: "",
+  };
+
+  changeFilter = (e) => {
+    this.setState({
+      filter: e.target.value,
+    });
+  };
+
+  getVisibleFilter = () => {
+    const { filter, teamMates } = this.state;
+    const normalizedFilter = filter.toLowerCase();
+
+    return teamMates.filter(({ username }) =>
+      username.toLowerCase().includes(normalizedFilter)
+    );
+  };
+
+  render() {
+    const { filter } = this.state;
+    const filteredContacts = this.getVisibleFilter();
+    return (
+      <>
+        <Header />
+        <Filter value={filter} onChange={this.changeFilter} />
+        <Team user={this.teamMates} teamMates={filteredContacts} />
+      </>
+    );
+  }
 }
 
 export default App;
